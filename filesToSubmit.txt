@@ -1,0 +1,3 @@
+file	tissue	day	mouse
+all_1_B.fastq	brain	7	1
+all_1_L.fastq	blood	7	3
