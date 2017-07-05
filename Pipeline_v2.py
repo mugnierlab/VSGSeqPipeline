@@ -34,7 +34,7 @@ parser.add_argument('-minp', help='Trinity, minimum protein length you are filte
 parser.add_argument('-mem', help='Trinity, max memory allocation for trinity, G', action ="store", dest = "mem", default="10") 
 parser.add_argument('-cpu', help='Trinity/cd-hit-est/MULTo/bowtie, number of processors to use', action="store", dest='cpu', default='2')
 # Blast settings
-parser.add_argument('-vsgdb', help='BLAST, name of the vsg database to blast against', action ="store", dest = "vsgdb", default="tb427_vsgs")
+parser.add_argument('-vsgdb', help='BLAST, name of the vsg database to blast against', action ="store", dest = "vsgdb", default="concatAnTattb427")
 parser.add_argument('-NoNonVSGdb', help='BLAST, adding this flag means you dont want to BLAST ORFS against the non-VSG database' , dest='NoNonVSGdb', action='store_true')
 # cd-hit-est parameters
 parser.add_argument('-sit', help='cd-hit-est, sequence identiy threshold - how much the alignment has to match, percentage. value is 0.0 through 1.0 ', action ="store", dest = "sit", default=".98")
@@ -106,8 +106,8 @@ else:
 				if arguments.stop > 3:
 					scoredict = vsgf.blastCDHIT(header, filebasenames, arguments)
 					if arguments.stop > 4:
-						vsgf.makeMulto(header, filebasenames, arguments)
-						#vsgf.analyzeMulto(header, filebasenames, arguments, header_list, sampledict, scoredict)
+						#vsgf.makeMulto(header, filebasenames, arguments)
+						vsgf.analyzeMulto(header, filebasenames, arguments, header_list, sampledict, scoredict)
 
 	else:
 		print("Bad start argument, double check the start number you entered")

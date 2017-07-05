@@ -25,7 +25,7 @@ def makeFilesList(filesList):
 		else:
 			line = line.strip('\n')
 			linesplit = line.split('\t')
-			sampledict[linesplit[0].split('.')[0]] = line.split('\t')[1:]
+			sampledict[linesplit[0].split('.')[0]] = line.split('\t')[0:]
 			filebasenames.append(linesplit[0].split('.')[0])
 	return (filebasenames, header_list, sampledict)
 
@@ -246,7 +246,7 @@ def blastCDHIT(header, filebasenames, arguments):
 							if not blast_record.query in hit_list: # if this query hasn't already been added to the hit list, add it now
 								if not blast_record.query in exclude_list: # if the query isn't a fake VSG hit, add it now!
 									hit_list.append(str(blast_record.query))											# percent query aligned										# percent identity
-									scoredict[str(blast_record.query)] = str('\t'+str(alignment.title)+'\t'+str((100.0 * hsp.identities) / blast_record.query_letters)+'\t'+str((100.0 * hsp.identities) / alignment.length)+'\t'+str(alignment.length)+'\n')
+									#scoredict[str(blast_record.query)] = str('\t'+str(alignment.title)+'\t'+str((100.0 * hsp.identities) / blast_record.query_letters)+'\t'+str((100.0 * hsp.identities) / alignment.length)+'\t'+str(alignment.length)+'\n')
 									SeqIO.write(record_dict[blast_record.query], outfile, "fasta")
 		else: # didn't blast against nonVSG database
 			for blast_record in blast_records:
@@ -255,7 +255,7 @@ def blastCDHIT(header, filebasenames, arguments):
 						if hsp.expect < 1.0e-10: # hsp.expect = e value for the hsp value, the lower the e value, the more statistically significant 
 							if not blast_record.query in hit_list: # if this query hasn't already been added to the hit list, add it now
 								hit_list.append(str(blast_record.query))											# percent query aligned										# percent identity
-								scoredict[str(blast_record.query)] = ('\t'+str(alignment.title)+'\t'+str((100.0 * hsp.identities) / blast_record.query_letters)+'\t'+str((100.0 * hsp.identities) / alignment.length)+'\t'+str(alignment.length)+'\n')
+								#scoredict[str(blast_record.query)] = ('\t'+str(alignment.title)+'\t'+str((100.0 * hsp.identities) / blast_record.query_letters)+'\t'+str((100.0 * hsp.identities) / alignment.length)+'\t'+str(alignment.length)+'\n')
 								SeqIO.write(record_dict[blast_record.query], outfile, "fasta")
 		
 		
@@ -270,6 +270,25 @@ def blastCDHIT(header, filebasenames, arguments):
 	if arguments.stderr == 0 :
 		stderr_cd = " > " + header + "/StandardError/cdhitest.txt"
 	subprocess.call(['cd-hit-est -i '+header+"/"+header+'_orf_VSGs.fa '+' -o '+header+"/"+header+'_orf_VSGs_merged.fa -d 0 -c ' + seqIdenThresh + ' -n 8 -G 1 -g 1 -s 0.0 -aL 0.0 -M '+str(max_memory_cdhit)+' -T ' + numCPU + stderr_cd], shell=True)
+	
+	#blast merged database:
+	
+	subprocess.call(['blastn -db '+vsgdDbName+' -query '+header+"/"+header+'_orf_VSGs_merged.fa -outfmt 5 -out '+header+"/"+header+'_orf_VSGs_merged.xml'], shell=True)
+	
+	#process blast
+	result_handle = open(header+"/"+header+'_orf_VSGs_merged.xml', 'r')
+	blast_records = NCBIXML.parse(result_handle)
+	s = header+"/"+header+'_orf_VSGs_merged.fa'
+	record_dict = SeqIO.index(s,"fasta")
+	hit_list = []
+	for blast_record in blast_records:
+				for alignment in blast_record.alignments:
+					for hsp in alignment.hsps:
+						if hsp.expect < 1.0e-10: # hsp.expect = e value for the hsp value, the lower the e value, the more statistically significant 
+							if not blast_record.query in hit_list: # if this query hasn't already been added to the hit list, add it now
+								hit_list.append(str(blast_record.query))											# percent query aligned										# percent identity
+								scoredict[str(blast_record.query)] = ('\t'+str(alignment.title)+'\t'+str((100.0 * hsp.identities) / blast_record.query_letters)+'\t'+str((100.0 * hsp.identities) / alignment.length)+'\t'+str(alignment.length)+'\n')
+								#SeqIO.write(record_dict[blast_record.query], outfile, "fasta")
 	
 	return scoredict
 
@@ -350,7 +369,8 @@ def analyzeMulto(header, filebasenames, arguments, header_list, sampledict, scor
 		multofilesplit = filepath.split('\n')
 		FPKM = float(0)
 		
-		file_data = '/t'.join(sampledict[file])
+		file_data = '\t'.join(sampledict[file])
+		print file_data
 		##calculate total FPKM
 		for line in multofilesplit:
 			if not line.startswith("#"):
@@ -366,7 +386,7 @@ def analyzeMulto(header, filebasenames, arguments, header_list, sampledict, scor
 					percent = (float(l[2])/FPKM)*100
 					VSG = str(l[0])
 					VSG_data = scoredict[VSG]
-					outfile.write(filedata+'\t'+VSG+'\t'+percent+'\t'+FPKM+'\t'+VSG_data)
+					outfile.write(file_data+'\t'+VSG+'\t'+str(percent)+'\t'+str(FPKM)+'\t'+VSG_data)
 		
 
 
