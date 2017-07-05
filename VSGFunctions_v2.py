@@ -9,26 +9,24 @@ import argparse
 import time
 import os
 
-def makeFilesList(files, filesList):
-	if filesList != "": # take in a text file with the sequence file dir/name in first column. tab-separated, with headers line describing all variables - MUST HAVE FQ suffix(for now?)no periods in middle
-		file = open(filesList,"r")
-		header_list = []
-		firstline = 0
-		sampledict = {}
-                filebasenames = []
-                
-		for line in file.readlines():
-			if firstline == 0:
-				line = line.strip('\n')
-                                header_list = line.split('\t')[0:]
-				firstline = 1
-			else:
-				line = line.strip('\n')
-                                linesplit = line.split('\t')
-				sampledict[linesplit[0].split('.')[0]] = line.split('\t')[1:]
-                                filebasenames.append(linesplit[0].split('.')[0])
-
-
+def makeFilesList(filesList):
+	#if filesList != "": # take in a text file with the sequence file dir/name in first column. tab-separated, with headers line describing all variables - MUST HAVE FQ suffix(for now?)no periods in middle
+	file = open(filesList,"r")
+	header_list = []
+	firstline = 0
+	sampledict = {}
+	filebasenames = []
+			
+	for line in file.readlines():
+		if firstline == 0:
+			line = line.strip('\n')
+			header_list = line.split('\t')[0:]
+			firstline = 1
+		else:
+			line = line.strip('\n')
+			linesplit = line.split('\t')
+			sampledict[linesplit[0].split('.')[0]] = line.split('\t')[1:]
+			filebasenames.append(linesplit[0].split('.')[0])
 	return (filebasenames, header_list, sampledict)
 
 def trimSequences(header, filebasenames, arguments):
@@ -189,68 +187,13 @@ def findORFs(header, filebasenames, arguments):
 		contig_outfile.close()
 		trans_out_file.close()
 
-def blast_sort(v,n,s,NoNonVSGdb):
-	#v = vsg xml file
-	#n = nonvsg xmlfile
-	#s = sequence file, contigs from blast searches
-	result_handle = open(v)
-	
-	blast_records = NCBIXML.parse(result_handle) # returns an iterator of the blast results
-	record_dict = SeqIO.index(s,"fasta")
-	
-	outfile = open(s.split('.')[0]+'_VSGs.fa', 'w')
-	scorefile = open(s.split('.')[0]+'_VSGs_scores.txt', 'w')
-
-	hit_list = []
-
-	if NoNonVSGdb == False: # blasted against nonVSG database
-		nonVSGresult_handle = open(n)
-		blast_records_nonVSG = NCBIXML.parse(nonVSGresult_handle)
-		blast_record_nonVSG = blast_records_nonVSG.next()
-		 # list of VSGs we have found! 
-		exclude_list = []
-				
-		print 'Now looking for non-VSG transcripts...'
-		for blast_record_nonVSG in blast_records_nonVSG:
-			for alignment in blast_record_nonVSG.alignments:
-				for hsp in alignment.hsps: 
-					percent_identity = (100.0 * hsp.identities) / alignment.length # hsp.identities is a tuple(bp matches, total bp in seq) to give percent match of sequence, percent identity is # of bp
-					percent_query_identity = (100.0 * hsp.identities) / blast_record_nonVSG.query_letters
-					#print blast_record_nonVSG.query+'\t'+alignment.title+'\t'+str(percent_identity)+'\t'+str(percent_query_identity)+'\t'
-					if (percent_query_identity > 30 and hsp.identities > 300) or (percent_identity > 90):
-						if not blast_record_nonVSG.query in exclude_list:
-							exclude_list.append(str(blast_record_nonVSG.query))
-							#print 'nonVSG hit!'+'\t'+str(blast_record_nonVSG.query)+' \t '+str(alignment.title)
-
-		print 'VSG hits! - maybe?'
-		for blast_record in blast_records:
-			for alignment in blast_record.alignments:
-				for hsp in alignment.hsps:
-					if hsp.expect < 1.0e-10: # hsp.expect = e value for the hsp value, the lower the e value, the more statistically significant 
-						if not blast_record.query in hit_list: # if this query hasn't already been added to the hit list, add it now
-							if not blast_record.query in exclude_list: # if the query isn't a fake VSG hit, add it now!
-								hit_list.append(str(blast_record.query))											# percent query aligned										# percent identity
-								scorefile.write(str(blast_record.query)+'\t'+str(alignment.title)+'\t'+str((100.0 * hsp.identities) / blast_record.query_letters)+'\t'+str((100.0 * hsp.identities) / alignment.length)+'\t'+str(alignment.length)+'\t'+str(s.split('.')[0])+'\n')
-								SeqIO.write(record_dict[blast_record.query], outfile, "fasta")
-	else: # didn't blast against nonVSG database
-		for blast_record in blast_records:
-			for alignment in blast_record.alignments:
-				for hsp in alignment.hsps:
-					if hsp.expect < 1.0e-10: # hsp.expect = e value for the hsp value, the lower the e value, the more statistically significant 
-						if not blast_record.query in hit_list: # if this query hasn't already been added to the hit list, add it now
-							hit_list.append(str(blast_record.query))											# percent query aligned										# percent identity
-							scorefile.write(str(blast_record.query)+'\t'+str(alignment.title)+'\t'+str((100.0 * hsp.identities) / blast_record.query_letters)+'\t'+str((100.0 * hsp.identities) / alignment.length)+'\t'+str(alignment.length)+'\t'+str(s.split('.')[0])+'\n')
-							SeqIO.write(record_dict[blast_record.query], outfile, "fasta")
-
-
-	outfile.close
-	scorefile.close
 
 def blastCDHIT(header, filebasenames, arguments):
 	vsgdDbName = arguments.vsgdb
 	seqIdenThresh = arguments.sit
-	max_memory_trinity  =int(arguments.mem) * 1000
 	numCPU = arguments.cpu
+	max_memory_cdhit = 1000*int(arguments.mem)
+	scoredict = {}
 	for file in filebasenames:
 		filename = header + "/"+header+"_"+file+"_orf"
 		print ' *****analyzing '+filename+".fa"+' *****'
@@ -260,18 +203,75 @@ def blastCDHIT(header, filebasenames, arguments):
 		if arguments.NoNonVSGdb == False:
 			subprocess.call(['blastn -db NOTvsgs -query '+filename+'.fa -outfmt 5 -out '+filename+'_nonVSG.xml'], shell=True)
 		#get all the blast results which are for ONLY VSGs, get rid of hits which are VSG-similar but not vsgs
-		blast_sort(filename+'.xml', filename+'_nonVSG.xml',filename+".fa", arguments.NoNonVSGdb) # the _VSGs.fa file is produced from this
-		# cdhit merge, clusters VSGs which are similar into one, so that we dont have replicates of VSGs
+		#blast_sort(filename+'.xml', filename+'_nonVSG.xml',filename+".fa", arguments.NoNonVSGdb) # the _VSGs.fa file is produced from this
+		
+		v = filename+'.xml'
+		n = filename+'_nonVSG.xml' 
+		s = filename+".fa"
+		
+		result_handle = open(v)
+		
+		blast_records = NCBIXML.parse(result_handle) # returns an iterator of the blast results
+		record_dict = SeqIO.index(s,"fasta")
+		
+		outfile = open(s.split('.')[0]+'_VSGs.fa', 'w')
+		#scorefile = open(s.split('.')[0]+'_VSGs_scores.txt', 'w')
+	
+		hit_list = []
+		scoredict = {}
+	
+		if arguments.NoNonVSGdb == False: # blasted against nonVSG database
+			nonVSGresult_handle = open(n)
+			blast_records_nonVSG = NCBIXML.parse(nonVSGresult_handle)
+			 # list of VSGs we have found! 
+			exclude_list = []
+					
+			print 'Now looking for non-VSG transcripts...'
+			for blast_record_nonVSG in blast_records_nonVSG:
+				for alignment in blast_record_nonVSG.alignments:
+					for hsp in alignment.hsps: 
+						percent_identity = (100.0 * hsp.identities) / alignment.length # hsp.identities is a tuple(bp matches, total bp in seq) to give percent match of sequence, percent identity is # of bp
+						percent_query_identity = (100.0 * hsp.identities) / blast_record_nonVSG.query_letters
+						#print blast_record_nonVSG.query+'\t'+alignment.title+'\t'+str(percent_identity)+'\t'+str(percent_query_identity)+'\t'
+						if (percent_query_identity > 30 and hsp.identities > 300) or (percent_identity > 90):
+							if not blast_record_nonVSG.query in exclude_list:
+								exclude_list.append(str(blast_record_nonVSG.query))
+								#print 'nonVSG hit!'+'\t'+str(blast_record_nonVSG.query)+' \t '+str(alignment.title)
+	
+			print 'VSG hits! - maybe?'
+			for blast_record in blast_records:
+				for alignment in blast_record.alignments:
+					for hsp in alignment.hsps:
+						if hsp.expect < 1.0e-10: # hsp.expect = e value for the hsp value, the lower the e value, the more statistically significant 
+							if not blast_record.query in hit_list: # if this query hasn't already been added to the hit list, add it now
+								if not blast_record.query in exclude_list: # if the query isn't a fake VSG hit, add it now!
+									hit_list.append(str(blast_record.query))											# percent query aligned										# percent identity
+									scoredict[str(blast_record.query)] = str('\t'+str(alignment.title)+'\t'+str((100.0 * hsp.identities) / blast_record.query_letters)+'\t'+str((100.0 * hsp.identities) / alignment.length)+'\t'+str(alignment.length)+'\n')
+									SeqIO.write(record_dict[blast_record.query], outfile, "fasta")
+		else: # didn't blast against nonVSG database
+			for blast_record in blast_records:
+				for alignment in blast_record.alignments:
+					for hsp in alignment.hsps:
+						if hsp.expect < 1.0e-10: # hsp.expect = e value for the hsp value, the lower the e value, the more statistically significant 
+							if not blast_record.query in hit_list: # if this query hasn't already been added to the hit list, add it now
+								hit_list.append(str(blast_record.query))											# percent query aligned										# percent identity
+								scoredict[str(blast_record.query)] = ('\t'+str(alignment.title)+'\t'+str((100.0 * hsp.identities) / blast_record.query_letters)+'\t'+str((100.0 * hsp.identities) / alignment.length)+'\t'+str(alignment.length)+'\n')
+								SeqIO.write(record_dict[blast_record.query], outfile, "fasta")
+		
+		
+	# cdhit merge, clusters VSGs which are similar into one, so that we dont have replicates of VSGs
 
 
 	all_VSGs = open(os.path.join(header, header+'_orf_VSGs.fa'), 'w')
 	for file in filebasenames:
-		subprocess.call(['cat '+header + "/"+header+"_"+file+"_orf_VSGs.fa >> " +header + "/"+header+"_orf_VSGs.fa"], shell=True) # concatinates all the files for MULTo
+		subprocess.call(['cat '+header + "/"+header+"_"+file+"_orf_VSGs.fa >> " +header + "/"+header+"_orf_VSGs.fa"], shell=True) # concatenates all the files for MULTo
 
 	stderr_cd = ""
 	if arguments.stderr == 0 :
 		stderr_cd = " > " + header + "/StandardError/cdhitest.txt"
-	subprocess.call(['cd-hit-est -i '+header+"/"+header+'_orf_VSGs.fa '+' -o '+header+"/"+header+'_orf_VSGs_merged.fa -d 0 -c ' + seqIdenThresh + ' -n 8 -G 1 -g 1 -s 0.0 -aL 0.0 -M '+str(max_memory_trinity )+' -T ' + numCPU + stderr_cd], shell=True)
+	subprocess.call(['cd-hit-est -i '+header+"/"+header+'_orf_VSGs.fa '+' -o '+header+"/"+header+'_orf_VSGs_merged.fa -d 0 -c ' + seqIdenThresh + ' -n 8 -G 1 -g 1 -s 0.0 -aL 0.0 -M '+str(max_memory_cdhit)+' -T ' + numCPU + stderr_cd], shell=True)
+	
+	return scoredict
 
 
 
@@ -280,18 +280,20 @@ def makeMulto(header, filebasenames, arguments):
 	rmulto = arguments.rmulto
 	numCPU = arguments.cpu
 	numMismatch = arguments.v
-	currDir = os.getcwd()
-	print currDir	
-	os.chdir(path)
+	currDir = os.getcwd()	
+	if path != '':
+		os.chdir(path)
 	print os.getcwd()
 	os.chdir('MULTo1.0')
+	fullmultopath = os.getcwd()
+	print fullmultopath
 
 	# make multo dir
 	# MULTo identifies, stores and retrieves the minimum length required at each genomic position to be unique across the genome or transcriptome.
 	#make multo file heirarchy from given basename
 	if rmulto == '': # make multo
-		subprocess.call(['mkdir -p '+path+'MULTo1.0/files/tbb/tb'+header+'/fastaFiles/annotationFiles/'], shell=True)
-		subprocess.call(['mkdir -p '+path+'MULTo1.0/files/tbb/tb'+header+'/fastaFiles/genomeFasta/noRandomChrom'], shell=True)
+		subprocess.call(['mkdir -p '+fullmultopath+'/files/tbb/tb'+header+'/fastaFiles/annotationFiles/'], shell=True)
+		subprocess.call(['mkdir -p '+fullmultopath+'/files/tbb/tb'+header+'/fastaFiles/genomeFasta/noRandomChrom'], shell=True)
 
 		# make bed
 		record_dict = SeqIO.index(currDir +'/' + header + "/"+header+"_orf_VSGs_merged.fa","fasta")
@@ -314,10 +316,10 @@ def makeMulto(header, filebasenames, arguments):
 		   
 		# move multo 
 		#move concat and bedfile into new folders
-		subprocess.call(['mv chr1.fa '+path+'MULTo1.0/files/tbb/tb'+header+'/fastaFiles/genomeFasta/noRandomChrom'], shell=True)
-		subprocess.call(['mv chr1.bed '+path+'MULTo1.0/files/tbb/tb'+header+'/fastaFiles/annotationFiles/'], shell=True)
+		subprocess.call(['mv chr1.fa '+fullmultopath+'/files/tbb/tb'+header+'/fastaFiles/genomeFasta/noRandomChrom'], shell=True)
+		subprocess.call(['mv chr1.bed '+fullmultopath+'/files/tbb/tb'+header+'/fastaFiles/annotationFiles/'], shell=True)
 		#run MULTo 
-		subprocess.call(['python '+path+'MULTo1.0/src/MULTo1.0.py -s tbb -a tb'+header+' -v '+numMismatch+' -O -p '+numCPU], shell=True)
+		subprocess.call(['python '+fullmultopath+'/src/MULTo1.0.py -s tbb -a tb'+header+' -v '+numMismatch+' -O -p '+numCPU], shell=True)
 		rmulto = header
 
 	os.chdir(currDir) # sets working directory back to previous folder
@@ -334,11 +336,45 @@ def makeMulto(header, filebasenames, arguments):
 		if arguments.stderr == 0 :
 			stderr_bw = " 2> " + header + "/StandardError/bowtie-"+file+".txt"
 			stderr_rp = " > " + header + "/StandardError/rpkmforgenes-"+file+".txt"
-		subprocess.call(['bowtie -v '+numMismatch+' -m 1 -p '+numCPU+' -S -a --strata --best '+str(path)+'MULTo1.0/files/tbb/tb'+rmulto+'/bowtie_indexes/tb'+rmulto+'_genome/tb'+rmulto+'_no_random '+header+'/'+ file  +'/'+file  + '_trimmed2.fq '+header + "/" + file+'_align.sam'+stderr_bw], shell=True)
-		subprocess.call(['python '+str(path)+'MULTo1.0/src/rpkmforgenes.py -i '+header + "/"+file+'_align.sam -samu -bedann -a '+str(path)+'MULTo1.0/files/tbb/tb'+rmulto+'/fastaFiles/annotationFiles/chr1.bed -u '+str(path)+'MULTo1.0/files/tbb/tb'+rmulto+'/MULfiles/tb'+rmulto+'_20-255/MULTo_files -o '+header + "/"+ file+'_MULTo.txt' + stderr_rp], shell=True)
+		subprocess.call(['bowtie -v '+numMismatch+' -m 1 -p '+numCPU+' -S -a --strata --best '+fullmultopath+'/files/tbb/tb'+rmulto+'/bowtie_indexes/tb'+rmulto+'_genome/tb'+rmulto+'_no_random '+header+'/'+ file  +'/'+file  + '_trimmed2.fq '+header + "/" + file+'_align.sam'+stderr_bw], shell=True)
+		subprocess.call(['python '+fullmultopath+'/src/rpkmforgenes.py -i '+header + "/"+file+'_align.sam -samu -bedann -a '+fullmultopath+'/files/tbb/tb'+rmulto+'/fastaFiles/annotationFiles/chr1.bed -u '+fullmultopath+'/files/tbb/tb'+rmulto+'/MULfiles/tb'+rmulto+'_20-255/MULTo_files -o '+header + "/"+ file+'_MULTo.txt' + stderr_rp], shell=True)
+	
+def analyzeMulto(header, filebasenames, arguments, header_list, sampledict, scoredict ):	#create scoredict during blast step!also ID top match database?
+	outfile = open(str(header+'_MULTo_analyzed_ALLdata.csv'), 'w')
+	score_header = 'hit VSG\tpct_id_query\tpct_id_match\tmatch_VSG_length\n'	
+	outfile.write(str('\t'.join(header_list)+'\tVSG\tPercent\tRPKM\t'+score_header+'\n'))
+	
+	for file in filebasenames:
+		filepath = open(str(header + "/"+ file+'_MULTo.txt'), 'rU')
+		filepath = filepath.read()
+		multofilesplit = filepath.split('\n')
+		FPKM = float(0)
+		
+		file_data = '/t'.join(sampledict[file])
+		##calculate total FPKM
+		for line in multofilesplit:
+			if not line.startswith("#"):
+					l = line.split("\t")
+					if len(l) > 2:
+						FPKM += float(l[2])
+		
+		###calculate final FPKM - this doesn't filter out those below 0.01% for calculation of percentage.. should it?
+		for line in multofilesplit:
+			if not line.startswith("#"):	
+				l = line.split("\t")
+				if len(l) == 3 :	
+					percent = (float(l[2])/FPKM)*100
+					VSG = str(l[0])
+					VSG_data = scoredict[VSG]
+					outfile.write(filedata+'\t'+VSG+'\t'+percent+'\t'+FPKM+'\t'+VSG_data)
+		
 
 
 
+
+
+
+	
 
 
 
