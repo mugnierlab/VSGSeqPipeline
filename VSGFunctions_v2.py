@@ -32,14 +32,13 @@ def makeFilesList(filesList):
 def trimSequences(header, filebasenames, arguments):
 	stringency = arguments.g
 	for file in filebasenames:
-		os.makedirs(header + "/" + file) 
 		stderr_tg = ""
 		stderr_ca = ""
 		if arguments.stderr == 0 :
 			stderr_tg = " 2> " + header + "/StandardError/trim_galore-"+file+".txt"
 			stderr_ca = " 2> " + header + "/StandardError/cutadapt-"+file+".txt"
 		subprocess.call(['trim_galore --stringency '+stringency+' --length '+arguments.trim+' --dont_gzip --output_dir ' + header + "/ " +str(file) +".fq"+stderr_tg], shell=True) # trim off sequenceing adapters
-		subprocess.call(['cutadapt -m '+arguments.trim+' -b ATTTAGGTGACACTATAG -b CTATAGTGTCACCTAAAT '+ header + "/"+str(file)+'_trimmed.fq > '+ header + "/"+file + "/"+str(file)+'_trimmed2.fq'+stderr_ca], shell=True) # trim off SP6 sequences (from VSG PCR step)
+		subprocess.call(['cutadapt -m '+arguments.trim+' -b ATTTAGGTGACACTATAG -b CTATAGTGTCACCTAAAT '+ header + "/"+str(file)+'_trimmed.fq > '+ header + "/"+str(file)+'_trimmed2.fq'+stderr_ca], shell=True) # trim off SP6 sequences (from VSG PCR step)
 		subprocess.call(['rm '+ header + "/"+str(file)+'_trimmed.fq'], shell=True) # removes intermediate trimmed file 
 
 
