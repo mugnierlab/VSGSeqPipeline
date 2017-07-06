@@ -100,13 +100,13 @@ else:
 	# start with trimmmed files
 	elif arguments.start == 1:
 		if arguments.stop >1:
-			print 'skipping Trinity! fix this next time'#vsgf.trinity(header, filebasenames, arguments)
+			vsgf.trinity(header, filebasenames, arguments)
 			if arguments.stop > 2:
-				print 'skipping orf finding!'#vsgf.findORFs(header, filebasenames, arguments)
+				vsgf.findORFs(header, filebasenames, arguments)
 				if arguments.stop > 3:
 					scoredict = vsgf.blastCDHIT(header, filebasenames, arguments)
 					if arguments.stop > 4:
-						#vsgf.makeMulto(header, filebasenames, arguments)
+						vsgf.makeMulto(header, filebasenames, arguments)
 						vsgf.analyzeMulto(header, filebasenames, arguments, header_list, sampledict, scoredict)
 
 	else:

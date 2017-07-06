@@ -38,9 +38,9 @@ def trimSequences(header, filebasenames, arguments):
 		if arguments.stderr == 0 :
 			stderr_tg = " 2> " + header + "/StandardError/trim_galore-"+file+".txt"
 			stderr_ca = " 2> " + header + "/StandardError/cutadapt-"+file+".txt"
-		subprocess.call(['trim_galore --stringency '+stringency+' --length '+arguments.trim+' --dont_gzip --output_dir ' + header + "/" + file + " " +str(file) +".fq"+stderr_tg], shell=True) # trim off sequenceing adapters
-		subprocess.call(['cutadapt -m '+arguments.trim+' -b ATTTAGGTGACACTATAG -b CTATAGTGTCACCTAAAT '+ header + "/"+ file+"/"+str(file)+'_trimmed.fq > '+ header + "/"+file + "/"+str(file)+'_trimmed2.fq'+stderr_ca], shell=True) # trim off SP6 sequences (from VSG PCR step)
-		subprocess.call(['rm '+ header + "/"+ file+"/"+str(file)+'_trimmed.fq'], shell=True) # removes intermediate trimmed file 
+		subprocess.call(['trim_galore --stringency '+stringency+' --length '+arguments.trim+' --dont_gzip --output_dir ' + header + "/ " +str(file) +".fq"+stderr_tg], shell=True) # trim off sequenceing adapters
+		subprocess.call(['cutadapt -m '+arguments.trim+' -b ATTTAGGTGACACTATAG -b CTATAGTGTCACCTAAAT '+ header + "/"+str(file)+'_trimmed.fq > '+ header + "/"+file + "/"+str(file)+'_trimmed2.fq'+stderr_ca], shell=True) # trim off SP6 sequences (from VSG PCR step)
+		subprocess.call(['rm '+ header + "/"+str(file)+'_trimmed.fq'], shell=True) # removes intermediate trimmed file 
 
 
 def trinity(header, filebasenames, arguments):
@@ -50,7 +50,7 @@ def trinity(header, filebasenames, arguments):
 		stderr_tr = ""
 		if arguments.stderr == 0 :
 			stderr_tr = " > " + header + "/StandardError/Trinity-"+file+".txt"
-		subprocess.call(['Trinity --seqType fq --max_memory '+max_memory_trinity+'G --full_cleanup --single ' + header + "/"+ file+"/"+str(file) +'_trimmed2.fq --CPU '+arguments.cpu+' --min_contig_length ' + str(min_pro_len*3) + ' --no_path_merging --no_normalize_reads --output ' + header+"/"+file+"_Trinity/" + stderr_tr], shell=True)
+		subprocess.call(['Trinity --seqType fq --max_memory '+max_memory_trinity+'G --full_cleanup --single ' + header + "/"+str(file) +'_trimmed2.fq --CPU '+arguments.cpu+' --min_contig_length ' + str(min_pro_len*3) + ' --no_path_merging --no_normalize_reads --output ' + header+"/"+file+"_Trinity/" + stderr_tr], shell=True)
 
 def addSeqRecord(recordRD, start, end, count):
 	sequence = recordRD.seq[start:end]
@@ -355,11 +355,11 @@ def makeMulto(header, filebasenames, arguments):
 		if arguments.stderr == 0 :
 			stderr_bw = " 2> " + header + "/StandardError/bowtie-"+file+".txt"
 			stderr_rp = " > " + header + "/StandardError/rpkmforgenes-"+file+".txt"
-		subprocess.call(['bowtie -v '+numMismatch+' -m 1 -p '+numCPU+' -S -a --strata --best '+fullmultopath+'/files/tbb/tb'+rmulto+'/bowtie_indexes/tb'+rmulto+'_genome/tb'+rmulto+'_no_random '+header+'/'+ file  +'/'+file  + '_trimmed2.fq '+header + "/" + file+'_align.sam'+stderr_bw], shell=True)
+		subprocess.call(['bowtie -v '+numMismatch+' -m 1 -p '+numCPU+' -S -a '+fullmultopath+'/files/tbb/tb'+rmulto+'/bowtie_indexes/tb'+rmulto+'_genome/tb'+rmulto+'_no_random '+header+'/'+file  + '_trimmed2.fq '+header + "/" + file+'_align.sam'+stderr_bw], shell=True)
 		subprocess.call(['python '+fullmultopath+'/src/rpkmforgenes.py -i '+header + "/"+file+'_align.sam -samu -bedann -a '+fullmultopath+'/files/tbb/tb'+rmulto+'/fastaFiles/annotationFiles/chr1.bed -u '+fullmultopath+'/files/tbb/tb'+rmulto+'/MULfiles/tb'+rmulto+'_20-255/MULTo_files -o '+header + "/"+ file+'_MULTo.txt' + stderr_rp], shell=True)
 	
 def analyzeMulto(header, filebasenames, arguments, header_list, sampledict, scoredict ):	#create scoredict during blast step!also ID top match database?
-	outfile = open(str(header+'_MULTo_analyzed_ALLdata.csv'), 'w')
+	outfile = open(str(header+'/'+header+'_MULTo_analyzed_ALLdata.csv'), 'w')
 	score_header = 'hit VSG\tpct_id_query\tpct_id_match\tmatch_VSG_length\n'	
 	outfile.write(str('\t'.join(header_list)+'\tVSG\tPercent\tRPKM\t'+score_header+'\n'))
 	
