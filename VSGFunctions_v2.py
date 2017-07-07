@@ -385,7 +385,8 @@ def analyzeMulto(header, filebasenames, arguments, header_list, sampledict, scor
 					percent = (float(l[2])/FPKM)*100
 					VSG = str(l[0])
 					VSG_data = scoredict[VSG]
-					outfile.write(file_data+'\t'+VSG+'\t'+str(percent)+'\t'+str(FPKM)+'\t'+VSG_data)
+					VSG_FPKM = float(l[2])
+					outfile.write(file_data+'\t'+VSG+'\t'+str(percent)+'\t'+str(VSG_FPKM)+'\t'+VSG_data)
 		
 
 
