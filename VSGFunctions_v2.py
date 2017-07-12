@@ -45,11 +45,16 @@ def trimSequences(header, filebasenames, arguments):
 def trinity(header, filebasenames, arguments):
 	max_memory_trinity  =arguments.mem
 	min_pro_len = arguments.minp
+	trim = arguments.start
 	for file in filebasenames:
+		if trim == 1:
+			filepath = str(str(file) +'.fq')
+		if trim == 0:
+			filepath = str(header + "/"+str(file) +'_trimmed2.fq')
 		stderr_tr = ""
 		if arguments.stderr == 0 :
 			stderr_tr = " > " + header + "/StandardError/Trinity-"+file+".txt"
-		subprocess.call(['Trinity --seqType fq --max_memory '+max_memory_trinity+'G --full_cleanup --single ' + header + "/"+str(file) +'_trimmed2.fq --CPU '+arguments.cpu+' --min_contig_length ' + str(min_pro_len*3) + ' --no_path_merging --no_normalize_reads --output ' + header+"/"+file+"_Trinity/" + stderr_tr], shell=True)
+		subprocess.call(['Trinity --seqType fq --max_memory '+max_memory_trinity+'G --full_cleanup --single ' + str(filepath) + ' --CPU '+arguments.cpu+' --min_contig_length ' + str(min_pro_len*3) + ' --no_path_merging --no_normalize_reads --output ' + header+"/"+file+"_Trinity/" + stderr_tr], shell=True)
 
 def addSeqRecord(recordRD, start, end, count):
 	sequence = recordRD.seq[start:end]
@@ -348,13 +353,18 @@ def makeMulto(header, filebasenames, arguments):
 	# bowtie aligns short reads to genome
 	# we are taking our quality trimmed and adaptercut sequence file (from step before running trinity)
 	# and we take all these trimmed sequence fragments and align them to the de novo assembled genome
+	trim = arguments.start
 	for file in filebasenames:
 		stderr_bw = ""
 		stderr_rp = ""
-		if arguments.stderr == 0 :
+		if arguments.stderr == 0:
 			stderr_bw = " 2> " + header + "/StandardError/bowtie-"+file+".txt"
 			stderr_rp = " > " + header + "/StandardError/rpkmforgenes-"+file+".txt"
-		subprocess.call(['bowtie -v '+numMismatch+' -m 1 -p '+numCPU+' -S -a '+fullmultopath+'/files/tbb/tb'+rmulto+'/bowtie_indexes/tb'+rmulto+'_genome/tb'+rmulto+'_no_random '+header+'/'+file  + '_trimmed2.fq '+header + "/" + file+'_align.sam'+stderr_bw], shell=True)
+		if trim == 1:
+			filepath = str(str(file) +'.fq')
+		if trim == 0:
+			filepath = str(header + "/"+str(file) +'_trimmed2.fq') # replace filepath = str(header + "/"+str(file) +'_trimmed2.fq' with str(filepath)
+		subprocess.call(['bowtie -v '+numMismatch+' -m 1 -p '+numCPU+' -S -a '+fullmultopath+'/files/tbb/tb'+rmulto+'/bowtie_indexes/tb'+rmulto+'_genome/tb'+rmulto+'_no_random '+str(filepath)+" " +header + "/" + file+'_align.sam'+stderr_bw], shell=True)
 		subprocess.call(['python '+fullmultopath+'/src/rpkmforgenes.py -i '+header + "/"+file+'_align.sam -samu -bedann -a '+fullmultopath+'/files/tbb/tb'+rmulto+'/fastaFiles/annotationFiles/chr1.bed -u '+fullmultopath+'/files/tbb/tb'+rmulto+'/MULfiles/tb'+rmulto+'_20-255/MULTo_files -o '+header + "/"+ file+'_MULTo.txt' + stderr_rp], shell=True)
 	
 def analyzeMulto(header, filebasenames, arguments, header_list, sampledict, scoredict ):	#create scoredict during blast step!also ID top match database?
@@ -386,7 +396,7 @@ def analyzeMulto(header, filebasenames, arguments, header_list, sampledict, scor
 					VSG = str(l[0])
 					VSG_data = scoredict[VSG]
 					VSG_FPKM = float(l[2])
-					outfile.write(file_data+'\t'+VSG+'\t'+str(percent)+'\t'+str(VSG_FPKM)+'\t'+VSG_data)
+					outfile.write(file_data+'\t'+VSG+'\t'+str(percent)+'\t'+str(VSG_FPKM)+VSG_data)
 		
 
 
