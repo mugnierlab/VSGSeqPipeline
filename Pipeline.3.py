@@ -3,7 +3,6 @@ from Bio.Alphabet import IUPAC
 from Bio.Blast import NCBIXML
 from Bio import SeqIO 
 from Bio import Seq
-from sys import argv
 import subprocess
 import argparse
 import time
@@ -275,7 +274,7 @@ def analyzeMulto(header, filebasenames, header_list, sampledict, scoredict ):#pa
 					VSG = str(l[0])
 					VSG_FPKM = float(l[2])
 					if scoredict == False:
-						outfile.write(file_data+'\t'+VSG+'\t'+str(percent)+'\t'+str(VSG_FPKM))
+						outfile.write(file_data+'\t'+VSG+'\t'+str(percent)+'\t'+str(VSG_FPKM)+'\n')
 					else:
 						VSG_data = scoredict[VSG]
 						outfile.write(file_data+'\t'+VSG+'\t'+str(percent)+'\t'+str(VSG_FPKM)+VSG_data)
@@ -445,19 +444,25 @@ analyzeMulto(header, filebasenames, header_list, sampledict, scoredict)
 	
 
 #tidy up all the output files
-os.makedirs(header+"/Trinity_assemblies")
-subprocess.call(["mv "+header+"/*Trinity.fasta "+header+"/Trinity_assemblies/"], shell=True)
+
 os.makedirs(header+"/bowtie_alignments")
 subprocess.call(["mv "+header+"/*.sam "+header+"/bowtie_alignments/"], shell=True)
 os.makedirs(header+"/MULTo_output")
 subprocess.call(["mv "+header+"/*_MULTo.txt "+header+"/MULTo_output/"], shell=True)
-os.makedirs(header+"/intermediate_ORF_and_VSG_files/")
-subprocess.call(["mv "+header+"/*_orf* "+header+"/intermediate_VSG_identification_files/"], shell=True)
-subprocess.call(["mv "+header+"/*_contig.fa* "+header+"/intermediate_VSG_identification_files/"], shell=True)
-os.makedirs(header+"/VSG_reference_fasta/")
-subprocess.call(["mv "+header+"/*merged* "+header+"/VSG_reference_fasta/"], shell=True)
-subprocess.call(["mv "+header+"/"+header+".fa "+header+"/VSG_reference_fasta/"], shell=True)
-subprocess.call(["mv "+header+"/"+header+".bed "+header+"/VSG_reference_fasta/"], shell=True)
+if trim == True:
+	os.makedirs(header+"/trimmed_files")
+	subprocess.call(["mv "+header+"/*trimmed2.fq "+header+"/trimmed_files/"], shell=True)
+if rmulto != '':
+	os.makedirs(header+"/Trinity_assemblies")
+	subprocess.call(["mv "+header+"/*Trinity.fasta "+header+"/Trinity_assemblies/"], shell=True)
+	os.makedirs(header+"/intermediate_VSG_identification_files/")
+	subprocess.call(["mv "+header+"/*_orf* "+header+"/intermediate_VSG_identification_files/"], shell=True)
+	subprocess.call(["mv "+header+"/*_contig.fa "+header+"/intermediate_VSG_identification_files/"], shell=True)
+	os.makedirs(header+"/VSG_reference_fasta/")
+	subprocess.call(["mv "+header+"/*merged* "+header+"/VSG_reference_fasta/"], shell=True)
+	subprocess.call(["mv "+header+"/"+header+".fa "+header+"/VSG_reference_fasta/"], shell=True)
+	subprocess.call(["mv "+header+"/"+header+".bed "+header+"/VSG_reference_fasta/"], shell=True)
+	
 
 
 
