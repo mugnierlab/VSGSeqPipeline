@@ -11,13 +11,13 @@ You can adjust various parameters
 
 You'll need biopython and the following pieces of software installed and in your PATH:  
 
--[MULTo] (http://sandberg.cmb.ki.se/multo/)  
--[blastn] (https://www.ncbi.nlm.nih.gov/books/NBK279671/)  
---help with blastdb situation
--[trim_galore] (https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/)  
--[cd-hit] (https://github.com/weizhongli/cdhit)  
--[Trinity] (https://github.com/trinityrnaseq/trinityrnaseq/releases)  
---(settings are currently optimized for v2.4.0\)
+* [MULTo](http://sandberg.cmb.ki.se/multo/)  
+* [blastn](https://www.ncbi.nlm.nih.gov/books/NBK279671/)  
+    * help with blastdb situation
+* [trim_galore](https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/)  
+* [cd-hit](https://github.com/weizhongli/cdhit)  
+* [Trinity](https://github.com/trinityrnaseq/trinityrnaseq/releases)  
+	* settings are currently optimized for v2.4.0
 
 
 ## Output Files
