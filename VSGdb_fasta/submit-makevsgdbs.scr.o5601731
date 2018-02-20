@@ -1,0 +1,44 @@
+
+
+Building a new DB, current time: 07/06/2017 15:58:25
+New DB name:   tb427_vsgs
+New DB title:  vsgs_427_cds_030414.fa
+Sequence type: Nucleotide
+Deleted existing BLAST database with identical name.
+Keep Linkouts: T
+Keep MBits: T
+Maximum file size: 1000000000B
+Adding sequences from FASTA; added 2584 sequences in 0.12776 seconds.
+
+
+Building a new DB, current time: 07/06/2017 15:58:25
+New DB name:   NOTvsgs
+New DB title:  NOTVSGs_wflanks_070617.fa
+Sequence type: Nucleotide
+Deleted existing BLAST database with identical name.
+Keep Linkouts: T
+Keep MBits: T
+Maximum file size: 1000000000B
+Adding sequences from FASTA; added 71 sequences in 0.0218501 seconds.
+
+
+Building a new DB, current time: 07/06/2017 15:58:25
+New DB name:   EATRO1125_vsgs
+New DB title:  3570cds_with_duplicates_annotated.fa
+Sequence type: Nucleotide
+Deleted existing BLAST database with identical name.
+Keep Linkouts: T
+Keep MBits: T
+Maximum file size: 1000000000B
+Adding sequences from FASTA; added 3570 sequences in 0.180368 seconds.
+
+
+Building a new DB, current time: 07/06/2017 15:58:26
+New DB name:   concatAnTattb427
+New DB title:  concatEATRO1125_tb427VSGs.fa
+Sequence type: Nucleotide
+Deleted existing BLAST database with identical name.
+Keep Linkouts: T
+Keep MBits: T
+Maximum file size: 1000000000B
+Adding sequences from FASTA; added 6154 sequences in 0.309807 seconds.
