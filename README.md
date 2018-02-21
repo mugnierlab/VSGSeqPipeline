@@ -35,7 +35,7 @@ There are three different VSG databases:
 
 There is one 'NonVSG' database (`NOTvsgs`). This database has been cobbled together after multiple iterations of assembling expressed VSGs, inspecting them by hand, and identifying common false positives (e.g., certain ESAGs assemble frequently and this will filter those out). If you run the pipeline using this filter (the default), you'll need this database available for BLAST.  
 
-These files need to be in your working directory *or* your `blastn` installation needs to be [configured](http://telliott99.blogspot.com/2009/12/blast-ncbirc-file.html) such that it can find them whereever they live on your machine.
+The blast database files you want to use need to be in your working directory *or* your `blastn` installation needs to be [configured](http://telliott99.blogspot.com/2009/12/blast-ncbirc-file.html) such that it can find them whereever they live on your machine.
 
 The fasta files these were created from are available in [VSGdb_fasta](VSGdb_fasta).
 
