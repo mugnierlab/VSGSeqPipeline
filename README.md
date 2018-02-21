@@ -6,7 +6,7 @@ Here's how you use it:
 python VSGSeqPipeline.py -i input_file_data.txt 
 ```
 You can adjust various parameters in your run. Read about all of the options using `python VSGSeqPipeline.py -h`.
-`input_file_data.txt` is a tab-delimited file describing your input files and the samples they came from. More info in [Input Files](#Input Files)
+`input_file_data.txt` is a tab-delimited file describing your input files and the samples they came from. More info in [Input Files](#input files)
 
 ## Required Software
 
@@ -18,11 +18,11 @@ You'll need biopython (we use [anaconda](https://anaconda.org/anaconda/python)) 
 * [blastn](https://www.ncbi.nlm.nih.gov/books/NBK279671/)  
 * [cd-hit](https://github.com/weizhongli/cdhit)
 * [bowtie](http://bowtie-bio.sourceforge.net/index.shtml)
-* [MULTo](http://sandberg.cmb.ki.se/multo/)  
+* [MULTo](http://sandberg.cmb.ki.se/multo/) (in your current working directory *or* indicate where it lives with `-p`)
 
 ## Input Files
 
- In addition to your sequencing files in FASTQ format (this pipeline uses single-end sequencing reads), you'll need a tab-delimited file containing information about your samples. The first line is a header line, containing whatever attributes of your sample you'd like to incorporate into downstream analysis. These attributes will be incorporated into the final file describing the results. The first column is the filename for each file. [Here's](Examples/filesToSubmit.txt) an example.
+ In addition to your sequencing files in FASTQ format (this pipeline uses single-end sequencing reads), you'll need a tab-delimited file containing information about your samples. The first line is a header line, containing whatever attributes of your sample you'd like to incorporate into downstream analysis. These attributes will be incorporated into the final file describing the results. The first column is the filename for each file. [Here's](Examples/filesToSubmit.txt) an example. The program expects those files to be in the current working directory.
 
 ## BLAST Databases for Identifying VSGs
 
