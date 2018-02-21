@@ -41,4 +41,4 @@ The fasta files these were created from are available in [VSGdb_fasta](VSGdb_fas
 
 ## Output Files
 
-All intermediate files produced in the pipeline are saved in one folder. A summary file shows the expression of each VSG in each sample, both in terms of RPKM (calculated using MULTo) and percentage of the population (RPKM for that VSG/total RPKM). If you assembled VSGs from your reads, it will also contain information on how similar those VSGs are to VSGs in your reference database. See an example [here](Examples).
+All intermediate files produced in the pipeline are saved in one folder. A summary file shows the expression of each VSG in each sample, both in terms of RPKM (calculated using MULTo) and percentage of the population (RPKM for that VSG/total RPKM). If you assembled VSGs from your reads, it will also contain information on how similar those VSGs are to VSGs in your reference database. See an example [here](Examples/sample_RESULTS.csv).
