@@ -19,9 +19,9 @@ You'll need biopython (we use [anaconda](https://anaconda.org/anaconda/python)) 
 * [bowtie](http://bowtie-bio.sourceforge.net/index.shtml)
 * [MULTo](http://sandberg.cmb.ki.se/multo/)  
 
-##Input Files
+## Input Files
 
- In addition to your sequencing files in FASTQ format (this pipeline uses single-end sequencing reads), you'll need a tab-delimited file containing information about your samples. The first line contains a header, including the first column is the filename for each 
+ In addition to your sequencing files in FASTQ format (this pipeline uses single-end sequencing reads), you'll need a tab-delimited file containing information about your samples. The first line is a header line, containing whatever attributes of your sample you'd like to incorporate into downstream analysis. These attributes will be incorporated into the final file describing the results. The first column is the filename for each file. See xxx for an example of one such file.
 
 ## BLAST Databases for Identifying VSGs
 
@@ -38,3 +38,4 @@ If you run the pipeline using this filter (the default), you'll need this databa
 The fasta files from which these were created are available in [VSGdb_fasta](VSGdb_fasta).
 
 ## Output Files
+
