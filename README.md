@@ -25,17 +25,18 @@ You'll need biopython (we use [anaconda](https://anaconda.org/anaconda/python)) 
 
 ## BLAST Databases for Identifying VSGs
 
-You can use any reference you want to identify VSGs. We have a few options available in [VSG_blastdbs/](VSG_blastdbs/).
+You can use any reference you want to identify VSGs. We have a few options available in [VSG_blastdbs](VSG_blastdbs).
 
 There are three different VSG databases:
 * EATRO1125 VSGs ('EATRO1125_vsgs')
 * Lister427 VSGs ('tb427_vsgs')
 * Combined database of BOTH Lister427 and EATRO1125 ('concatAntattb427')
 
-There is one 'NonVSG' database ('NOTvsgs'). This database has been cobbled together after multiple iterations of assembling expressed VSGs, inspecting them by hand and identifying common false positives (e.g., sometimes ESAGs assemble and this can filter those out).\
-If you run the pipeline using this filter (the default), you'll need this database available for BLAST.
+There is one 'NonVSG' database ('NOTvsgs'). This database has been cobbled together after multiple iterations of assembling expressed VSGs, inspecting them by hand, and identifying common false positives (e.g., certain ESAGs assemble frequently and this will filter those out). If you run the pipeline using this filter (the default), you'll need this database available for BLAST.  
 
-The fasta files from which these were created are available in [VSGdb_fasta](VSGdb_fasta).
+These files need to be in your working directory OR your blastn installation needs to be [configured](http://telliott99.blogspot.com/2009/12/blast-ncbirc-file.html) such that it can find them whereever they live on your machine.
+
+The fasta files these were created from are available in [VSGdb_fasta](VSGdb_fasta).
 
 ## Output Files
 
