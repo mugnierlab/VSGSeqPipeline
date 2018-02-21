@@ -22,7 +22,7 @@ You'll need biopython (we use [anaconda](https://anaconda.org/anaconda/python)) 
 
 ## Input Files
 
- In addition to your sequencing files in FASTQ format (this pipeline uses single-end sequencing reads), you'll need a tab-delimited file containing information about your samples. The first line is a header line, containing whatever attributes of your sample you'd like to incorporate into downstream analysis. These attributes will be incorporated into the final file describing the results. The first column is the filename for each file. See [filesToSubmit.txt](filesToSubmit.txt) for an example of one such file.
+ In addition to your sequencing files in FASTQ format (this pipeline uses single-end sequencing reads), you'll need a tab-delimited file containing information about your samples. The first line is a header line, containing whatever attributes of your sample you'd like to incorporate into downstream analysis. These attributes will be incorporated into the final file describing the results. The first column is the filename for each file. [Here's](Examples/filesToSubmit.txt) an example.
 
 ## BLAST Databases for Identifying VSGs
 
@@ -41,4 +41,4 @@ The fasta files these were created from are available in [VSGdb_fasta](VSGdb_fas
 
 ## Output Files
 
-All intermediate files produced in the pipeline are saved in one folder. A summary file shows the expression of each VSG in each sample, both in terms of RPKM (calculated using MULTo) and percentage of the population (RPKM for that VSG/total RPKM). If you assembled VSGs from your reads, it will also contain information on how similar those VSGs are to VSGs in your reference database. 
+All intermediate files produced in the pipeline are saved in one folder. A summary file shows the expression of each VSG in each sample, both in terms of RPKM (calculated using MULTo) and percentage of the population (RPKM for that VSG/total RPKM). If you assembled VSGs from your reads, it will also contain information on how similar those VSGs are to VSGs in your reference database. See an example [here](Examples).
