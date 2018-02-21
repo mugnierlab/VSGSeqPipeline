@@ -288,7 +288,7 @@ parser.add_argument('-i',help='text file with .fastq names of sequence files to 
 parser.add_argument('-header', help='name for output folder, overrides default Y-m-d-H_M format ', action="store", dest='head', default='')
 
 # trimming setting
-parser.add_argument('-trim', help='perform quality trimming, default is to skip this step', action='store_true', dest='trim')
+parser.add_argument('-trim', help='perform quality trimming, default is to skip this step', action='store_false', dest='trim')
 parser.add_argument('-g', help='trim_galore, stringency for trim galore', action ="store", dest = "g", default="3") 
 parser.add_argument('-trimlen', help='cutadapt/trim_galore, minimum length of read for trimming', action ="store", dest = "trimlen", default="50") 
 
@@ -378,7 +378,7 @@ if trim == True:
 	for file in filebasenames:
 		if os.path.exists(str(file+'.fq')): 
 			filepath = str(str(file) +'.fq')
-		if os.path.exists(str(file+'.fastq')):
+		elif os.path.exists(str(file+'.fastq')):
 			filepath = str(str(file) +'.fastq')
 		stderr_tg = " 2> " + header + "/StandardError/trim_galore-"+file+".txt"
 		stderr_ca = " 2> " + header + "/StandardError/cutadapt-"+file+".txt"
@@ -393,8 +393,9 @@ if rmulto == '': #if you need to make a multo database from your VSGs
 		else:
 			if os.path.exists(str(file+'.fq')): 
 				filepath = str(str(file) +'.fq')
-			if os.path.exists(str(file+'.fastq')):
+			elif os.path.exists(str(file+'.fastq')):
 				filepath = str(str(file) +'.fastq')
+		print filepath
 		stderr_tr = " > " + header + "/StandardError/Trinity-"+str(file)+".txt" 
 		subprocess.call(['Trinity --seqType fq --max_memory '+arguments.mem+'G --full_cleanup --single ' + str(filepath) + ' --CPU '+numCPU+' --min_contig_length ' + str(min_pro_len*3) + ' --no_path_merging --no_normalize_reads --output ' + header+"/"+file+"_Trinity/" + stderr_tr], shell=True)
 		
