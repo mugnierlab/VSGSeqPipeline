@@ -22,7 +22,7 @@ You'll need biopython (we use [anaconda](https://anaconda.org/anaconda/python)) 
 
 ## Input Files
 
- In addition to your sequencing files in FASTQ format (this pipeline uses single-end sequencing reads), you'll need a tab-delimited file containing information about your samples. The first line is a header line, containing whatever attributes of your sample you'd like to incorporate into downstream analysis. These attributes will be incorporated into the final file describing the results. The first column is the filename for each file. [Here's](Examples/filesToSubmit.txt) an example. The program expects those files to be in the current working directory.
+ In addition to your sequencing files in FASTQ format (this pipeline uses single-end sequencing reads), you'll need a tab-delimited file containing information about your samples. The first line is a header containing whatever attributes of your sample you'd like to incorporate into downstream analysis. These attributes will be incorporated into the final file describing the results. The first column must be the name of each input FASTQ. [Here's](Examples/filesToSubmit.txt) an example. The program expects those files to be in the current working directory.
 
 ## BLAST Databases for Identifying VSGs
 
