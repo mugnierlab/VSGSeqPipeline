@@ -1,12 +1,12 @@
 # VSG-Seq Analysis Pipeline
+A pipeline for analyzing VSG-seq data. More information about the approach can be found in our [paper](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4514441/). 
 
-## Basic Usage
-Here's how you use it:  
+## Basic Usage 
 ```
 python VSGSeqPipeline.py -i input_file_data.txt 
 ```
-You can adjust various parameters in your run. Read about all of the options using `python VSGSeqPipeline.py -h`.
-`input_file_data.txt` is a tab-delimited file describing your input files and the samples they came from. More info in [Input Files](#input files)
+You can adjust various parameters for your run. Read about all of the options using `python VSGSeqPipeline.py -h`.
+`input_file_data.txt` is a tab-delimited file describing your input files and the samples they came from. More info in [Input Files](#input-files).
 
 ## Required Software
 
@@ -29,13 +29,13 @@ You'll need biopython (we use [anaconda](https://anaconda.org/anaconda/python)) 
 You can use any reference you want to identify VSGs. We have a few options available in [VSG_blastdbs](VSG_blastdbs).
 
 There are three different VSG databases:
-* EATRO1125 VSGs ('EATRO1125_vsgs')
-* Lister427 VSGs ('tb427_vsgs')
-* Combined database of BOTH Lister427 and EATRO1125 ('concatAntattb427')
+* EATRO1125 VSGs (`EATRO1125_vsgs`)
+* Lister427 VSGs (`tb427_vsgs`)
+* Combined database of BOTH Lister427 and EATRO1125 (`concatAntattb427`)
 
-There is one 'NonVSG' database ('NOTvsgs'). This database has been cobbled together after multiple iterations of assembling expressed VSGs, inspecting them by hand, and identifying common false positives (e.g., certain ESAGs assemble frequently and this will filter those out). If you run the pipeline using this filter (the default), you'll need this database available for BLAST.  
+There is one 'NonVSG' database (`NOTvsgs`). This database has been cobbled together after multiple iterations of assembling expressed VSGs, inspecting them by hand, and identifying common false positives (e.g., certain ESAGs assemble frequently and this will filter those out). If you run the pipeline using this filter (the default), you'll need this database available for BLAST.  
 
-These files need to be in your working directory OR your blastn installation needs to be [configured](http://telliott99.blogspot.com/2009/12/blast-ncbirc-file.html) such that it can find them whereever they live on your machine.
+These files need to be in your working directory *or* your `blastn` installation needs to be [configured](http://telliott99.blogspot.com/2009/12/blast-ncbirc-file.html) such that it can find them whereever they live on your machine.
 
 The fasta files these were created from are available in [VSGdb_fasta](VSGdb_fasta).
 
