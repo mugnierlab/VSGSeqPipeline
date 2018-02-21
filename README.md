@@ -28,11 +28,11 @@ You'll need biopython (we use [anaconda](https://anaconda.org/anaconda/python)) 
 You can use any reference you want to identify VSGs. We have a few options available in [VSG_blastdbs/](VSG_blastdbs/).
 
 There are three different VSG databases:
-	* EATRO1125 VSGs ( )
-	* Lister427 VSGs ( )
-	* Combined database of BOTH Lister427 and EATRO1125
+* EATRO1125 VSGs ('EATRO1125_vsgs')
+* Lister427 VSGs ('tb427_vsgs')
+* Combined database of BOTH Lister427 and EATRO1125 ('concatAntattb427')
 
-There is one 'NonVSG' database. This database has been cobbled together after multiple iterations of assembling expressed VSGs, inspecting them by hand and identifying common false positives (e.g., sometimes ESAGs assemble and this can filter those out).\
+There is one 'NonVSG' database ('NOTvsgs'). This database has been cobbled together after multiple iterations of assembling expressed VSGs, inspecting them by hand and identifying common false positives (e.g., sometimes ESAGs assemble and this can filter those out).\
 If you run the pipeline using this filter (the default), you'll need this database available for BLAST.
 
 The fasta files from which these were created are available in [VSGdb_fasta](VSGdb_fasta).
