@@ -325,6 +325,7 @@ path = arguments.p
 numMismatch = arguments.v
 rmulto = arguments.rmulto
 trimlen = arguments.trimlen
+stringency = arguments.g
 currDir = os.getcwd()
 
 
