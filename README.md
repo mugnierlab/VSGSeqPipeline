@@ -3,9 +3,10 @@
 ## Basic Usage
 Here's how you use it:  
 ```
-python VSG-Seq_Pipeline.py -i input_file_data.txt 
+python VSGSeqPipeline.py -i input_file_data.txt 
 ```
-You can adjust various parameters
+You can adjust various parameters in your run. Read about all of the options using `python VSGSeqPipeline.py -h`.
+`input_file_data.txt` is a tab-delimited file describing your input files and the samples they came from. More info in [Input Files](#Input Files)
 
 ## Required Software
 
@@ -40,3 +41,4 @@ The fasta files these were created from are available in [VSGdb_fasta](VSGdb_fas
 
 ## Output Files
 
+All intermediate files produced in the pipeline are saved in one folder. A summary file shows the expression of each VSG in each sample, both in terms of RPKM (calculated using MULTo) and percentage of the population (RPKM for that VSG/total RPKM). If you assembled VSGs from your reads, it will also contain information on how similar those VSGs are to VSGs in your reference database. 
