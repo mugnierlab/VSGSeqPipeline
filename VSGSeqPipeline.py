@@ -248,7 +248,7 @@ def analyzeMulto(header, filebasenames, header_list, sampledict, scoredict ):#pa
 	if scoredict == False:
 		outfile.write(str('\t'.join(header_list)+'\tVSG\tPercent\tRPKM\n'))
 	else:
-		outfile.write(str('\t'.join(header_list)+'\tVSG\tPercent\tRPKM\thit VSG\tpct_id_vs_query\tpct_id_vs_match\tmatch_VSG_length\tassembled_VSG_length\n'))
+		outfile.write(str('\t'.join(header_list)+'\tVSG\tPercent\tRPKM\thit_VSG\tpct_id_vs_query\tpct_id_vs_match\tmatch_VSG_length\tassembled_VSG_length\n'))
 	
 	for file in filebasenames:
 		filepath = open(str(header + "/"+ file+'_MULTo.txt'), 'rU')
