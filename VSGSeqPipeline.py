@@ -383,8 +383,8 @@ if trim == True:
 			filepath = str(str(file) +'.fastq')
 		stderr_tg = " 2> " + header + "/StandardError/trim_galore-"+file+".txt"
 		stderr_ca = " 2> " + header + "/StandardError/cutadapt-"+file+".txt"
-		subprocess.call(['trim_galore --stringency '+stringency+' --length '+trim+' --dont_gzip --output_dir ' + header + "/ " +str(filepath)+stderr_tg], shell=True) # trim off sequenceing adapters
-		subprocess.call(['cutadapt -m '+trim+' -b ATTTAGGTGACACTATAG -b CTATAGTGTCACCTAAAT '+ header + "/"+str(file)+'_trimmed.fq > '+ header + "/"+str(file)+'_trimmed2.fq'+stderr_ca], shell=True) # trim off SP6 sequences (from VSG PCR step)
+		subprocess.call(['trim_galore --stringency '+str(stringency)+' --length '+trimlen+' --dont_gzip --output_dir ' + header + "/ " +str(filepath)+stderr_tg], shell=True) # trim off sequenceing adapters
+		subprocess.call(['cutadapt -m '+trimlen+' -b ATTTAGGTGACACTATAG -b CTATAGTGTCACCTAAAT '+ header + "/"+str(file)+'_trimmed.fq > '+ header + "/"+str(file)+'_trimmed2.fq'+stderr_ca], shell=True) # trim off SP6 sequences (from VSG PCR step)
 		subprocess.call(['rm '+ header + "/"+str(file)+'_trimmed.fq'], shell=True) # removes intermediate trimmed file 
 
 if rmulto == '': #if you need to make a multo database from your VSGs
