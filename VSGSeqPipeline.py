@@ -244,7 +244,7 @@ def makeMulto(header, path, referencefasta, numMismatch, numCPU ): #Makes the MU
 
 def analyzeMulto(header, filebasenames, header_list, sampledict, scoredict ):#parse the MULTo output files to make final results file
 		
-	outfile = open(str(header+'/'+header+'_RESULTS.csv'), 'w')
+	outfile = open(str(header+'/'+header+'_RESULTS.txt'), 'w')
 	if scoredict == False:
 		outfile.write(str('\t'.join(header_list)+'\tVSG\tPercent\tRPKM\n'))
 	else:
