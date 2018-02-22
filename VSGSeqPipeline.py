@@ -454,17 +454,17 @@ subprocess.call(["mv "+header+"/*_MULTo.txt "+header+"/MULTo_output/"], shell=Tr
 if trim == True:
 	os.makedirs(header+"/trimmed_files")
 	subprocess.call(["mv "+header+"/*trimmed2.fq "+header+"/trimmed_files/"], shell=True)
-if rmulto != '':
+	subprocess.call(["mv "+header+"/*trimming* "+header+"/trimmed_files/"], shell=True)
+if rmulto == '':
 	os.makedirs(header+"/Trinity_assemblies")
 	subprocess.call(["mv "+header+"/*Trinity.fasta "+header+"/Trinity_assemblies/"], shell=True)
-	os.makedirs(header+"/intermediate_VSG_identification_files/")
-	subprocess.call(["mv "+header+"/*_orf* "+header+"/intermediate_VSG_identification_files/"], shell=True)
-	subprocess.call(["mv "+header+"/*_contig.fa "+header+"/intermediate_VSG_identification_files/"], shell=True)
 	os.makedirs(header+"/VSG_reference_fasta/")
 	subprocess.call(["mv "+header+"/*merged* "+header+"/VSG_reference_fasta/"], shell=True)
 	subprocess.call(["mv "+header+"/"+header+".fa "+header+"/VSG_reference_fasta/"], shell=True)
 	subprocess.call(["mv "+header+"/"+header+".bed "+header+"/VSG_reference_fasta/"], shell=True)
-	
+	os.makedirs(header+"/intermediate_VSG_identification_files/")
+	subprocess.call(["mv "+header+"/*_orf* "+header+"/intermediate_VSG_identification_files/"], shell=True)
+	subprocess.call(["mv "+header+"/*_contig.fa "+header+"/intermediate_VSG_identification_files/"], shell=True)
 
 
 
