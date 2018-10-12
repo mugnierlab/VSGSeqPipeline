@@ -1,5 +1,5 @@
 # VSG-Seq Analysis Pipeline
-A pipeline for analyzing VSG-seq data. A protocol for preparing VSG-Seq libraries can be found [here](VSG-Seq_protocol.docx), and more information about the approach can be found in our [paper](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4514441/). (Reference genomes from that paper can be found in [Science2015_reference_genomes].)
+A pipeline for analyzing VSG-seq data. A protocol for preparing VSG-Seq libraries can be found [here](VSG-Seq_protocol.docx), and more information about the approach can be found in our [paper](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4514441/). (Reference genomes from that paper can be found in [Science2015_reference_genomes](Science2015_reference_genomes).)
 
 ## Basic Usage 
 ```
