@@ -13,7 +13,7 @@ You can adjust various parameters for your run. Read about all of the options us
 You'll need biopython (we use [anaconda](https://anaconda.org/anaconda/python)) and the following software installed and in your PATH:  
 
 * [trim_galore](https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/)  
-* [Trinity](https://github.com/trinityrnaseq/trinityrnaseq/releases)  (settings are currently optimized for v2.4.0)
+* [Trinity](https://github.com/trinityrnaseq/trinityrnaseq/releases)  (settings have been tested for v2.4.0 and v2.8.5)
 * [bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml) (required for Trinity)
 * [blastn](https://www.ncbi.nlm.nih.gov/books/NBK279671/)  
 * [cd-hit](https://github.com/weizhongli/cdhit)
