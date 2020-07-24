@@ -68,7 +68,7 @@ def findORFs(header, file, min_pro_len): #finds open reading frames in each asse
 										if strand ==1:
 											addSeqRecord(record_dict[record], frame, frame+(trans_end*3)+3, count, ORF_outfile, trans_out_file, file)
 										else:
-											addSeqRecord_RC(record_dict[record], max(frame, seq_len-frame-(trans_end*3)-3), seq_len, count, ORF_outfile, trans_out_file, file)
+											addSeqRecord_RC(record_dict[record], max(frame, seq_len-frame-(trans_end*3)-3), seq_len-frame, count, ORF_outfile, trans_out_file, file)
 										count += 1
 									# if neither protein is long enough,or even if it was, we will move on to find where the next start codon is, and find the end codon for that one
 									trans_start = trans.find("M", trans_end)
@@ -85,7 +85,10 @@ def findORFs(header, file, min_pro_len): #finds open reading frames in each asse
 							# this portion of the code will take the entire thing as an ORF, we are being generous
 								if wholeAdded == False: # won't add if the entire strand was already added
 									wholeAdded = True
-									addSeqRecord_RC(record_dict[record], frame, seq_len, count, ORF_outfile, trans_out_file, file)
+									if strand ==1:
+										addSeqRecord(record_dict[record], frame+(trans_start*3), seq_len, count, ORF_outfile, trans_out_file, file)
+									else:
+										addSeqRecord_RC(record_dict[record], frame, seq_len-frame-(trans_start*3), count, ORF_outfile, trans_out_file, file)
 									count += 1
 								trans_start = trans_len # won't go into loop, bc the entire rest of the sequence just got taken as an orf, so there is no point	in searching further, no more to search
 						elif trans_end != -1: # start codon doesn't exist, but end codon does
@@ -93,18 +96,20 @@ def findORFs(header, file, min_pro_len): #finds open reading frames in each asse
 								if strand ==1:
 									addSeqRecord(record_dict[record], frame, frame+(trans_end*3)+3, count, ORF_outfile, trans_out_file, file)
 								else:
-									addSeqRecord_RC(record_dict[record], max(frame, seq_len-frame-(trans_end*3)-3), seq_len-frame-(trans_start*3), count, ORF_outfile, trans_out_file, file)
+									addSeqRecord_RC(record_dict[record], max(frame, seq_len-frame-(trans_end*3)-3), seq_len-frame-(trans_end*3), count, ORF_outfile, trans_out_file, file)
 								count += 1	
 							trans_start = trans_len # won't search for more, since there aren't any start codons anywhere
 						else: # there are no start or stop codons anywhere?!
 							if wholeAdded == False:
 								wholeAdded == True
-								addSeqRecord_RC(record_dict[record], frame, seq_len, count, ORF_outfile, trans_out_file, file)
+								if strand ==1:
+									addSeqRecord(record_dict[record], frame, seq_len, count, ORF_outfile, trans_out_file, file)
+								else:
+									addSeqRecord_RC(record_dict[record], frame, seq_len-frame, count, ORF_outfile, trans_out_file, file)
 								trans_start = trans_len
 								count += 1	
 						
 						trans_max = trans_len - min_pro_len # farthest a codon can be before it's below min protein length
-
 						while trans_start < trans_max:
 							if trans_start == -1: # if no more starts are found, doesn't matter if there is a stop or not, game over
 								trans_start = trans_len
@@ -127,9 +132,8 @@ def findORFs(header, file, min_pro_len): #finds open reading frames in each asse
 							else:
 								trans_start = trans.find("M", trans_end) 
 								trans_end = trans.find("*", trans_start)			
-
 				if count > 1: # have any new orf been added? if so, add this record to file
-					SeqIO.write(record_dict[record], contig_outfile, "fasta") 
+					SeqIO.write(record_dict[record], contig_outfile, "fasta")
 
 		ORF_outfile.close()
 		contig_outfile.close()
