@@ -292,7 +292,7 @@ parser.add_argument('-i',help='text file with .fastq names of sequence files to 
 parser.add_argument('-header', help='name for output folder, overrides default Y-m-d-H_M format ', action="store", dest='head', default='')
 
 # trimming setting
-parser.add_argument('-trim', help='perform quality trimming, default is to skip this step', action='store_false', dest='trim')
+parser.add_argument('-trim', help='perform quality trimming, default is to skip this step', action='store_true', dest='trim')
 parser.add_argument('-g', help='trim_galore, stringency for trim galore', action ="store", dest = "g", default="3") 
 parser.add_argument('-trimlen', help='cutadapt/trim_galore, minimum length of read for trimming', action ="store", dest = "trimlen", default="50") 
 
