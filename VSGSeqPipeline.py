@@ -436,7 +436,10 @@ for file in filebasenames:
 	stderr_bw = " 2> " + header + "/StandardError/bowtie-"+file+".txt"
 	stderr_rp = " > " + header + "/StandardError/rpkmforgenes-"+file+".txt"
 	if trim == False:
-		filepath = str(str(file) +'.fq')
+		if os.path.exists(str(file+'.fq')): 
+			filepath = str(str(file) +'.fq')
+		elif os.path.exists(str(file+'.fastq')):
+			filepath = str(str(file) +'.fastq')
 	if trim == True:
 		filepath = str(header + "/"+str(file) +'_trimmed2.fq') 
 	if rmulto != "":
